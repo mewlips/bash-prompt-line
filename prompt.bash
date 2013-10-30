@@ -22,80 +22,95 @@ c2n() {
     esac
 }
 
+cols() {
+    tput cols
+}
 bold() {
     tput bold
 }
-
 set_fg() {
     tput setaf $(c2n $1)
 }
-
 set_bg() {
     tput setab $(c2n $1)
 }
 reset_color() {
     tput sgr0
 }
+move_right() {
+    tput cuf1
+}
+
+theme_basic() {
+    THEME_LINE_BG=234
+    THEME_LINE=$(set_bg ${THEME_LINE_BG})$(set_fg ${THEME_LINE_BG})
+    THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg RED)
+    THEME_GIT_BRANCH=$(bold)$(set_fg YELLOW)
+    THEME_USER=$(bold)$(set_fg GREEN)$(set_bg ${THEME_LINE_BG})
+    THEME_AT=$(set_fg RED)
+    THEME_HOST=$(bold)$(set_fg BLUE)$(set_bg ${THEME_LINE_BG})
+    THEME_DOLLOR=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg WHITE)
+    THEME_PATH_SEP=$(reset_color)$(set_bg ${THEME_LINE_BG})$(set_fg white)
+    THEME_TILDE=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg CYAN)
+}
 
 prompt_bg_line() {
     exit_num=$?
     if [ "$exit_num" != "0" ]; then
-        exit_num="$(bold)$(set_fg RED)$exit_num"
+        exit_num="${THEME_EXIT_NUM}${exit_num}$(move_right)"
     else
         exit_num=
     fi
 
-    cols=$(tput cols)
-    line="$(set_bg 234)$(set_fg 234)"
-    for i in $(seq $cols); do
+    line=
+    for i in $(seq $(cols)); do
         line="${line}_"
     done
-    line="${line}$(tput cr)$exit_num$(reset_color)"
+    line="${THEME_LINE}${line}$(tput cr)${exit_num}$(reset_color)"
     echo -n $line
-}
-
-move_right() {
-    tput cuf1
 }
 
 show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [ $? == 0 ]; then
-        echo "$(set_fg YELLOW)$(bold)$(git branch | grep ^\* | cut -d ' ' -f 2) $(reset_color)"
+        echo "${THEME_GIT_BRANCH}$(git branch | grep ^\* | cut -d ' ' -f 2) $(reset_color)"
     fi
 }
-
-P_USER=$(echo $(set_fg GREEN)$(set_bg 234)$(bold)$USER)
-P_USER_LEN=${#USER}
-P_AT=$(echo $(set_fg RED)$(set_bg 234)@)
-P_HOST=$(echo $(set_fg BLUE)$(set_bg 234)$(bold)$HOSTNAME)
-P_HOST_LEN=${#HOSTNAME}
-P_PWD="$(echo $(set_fg 51)$(set_bg 31)\\w$(reset_color))"
-P_SEP="$(echo $(set_fg WHITE)$(bold))|"
 
 show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
     local color=100
     if [ "$dir" == "/" ]; then
-        awesome_dir="$(set_bg 234)$(set_fg WHITE)/$(reset_color)"
+        awesome_dir="${THEME_PATH_SEP}/$(reset_color)"
     elif [ "$dir" == "$HOME" ]; then
-        awesome_dir="$(set_bg 234)$(set_fg WHITE)~$(reset_color)"
+        awesome_dir="${THEME_TILDE}~$(reset_color)"
     else
         while [ "$dir" != "/" ]; do
             local dn="$(dirname "$dir")"
             local bn="$(basename "$dir")"
-            awesome_dir="$(set_fg WHITE)/$(set_fg $color)$bn$awesome_dir"
+            awesome_dir="${THEME_PATH_SEP}/$(bold)$(set_fg $color)$bn$awesome_dir"
             color=$((color + 1))
             dir="$dn"
             if [ "$dir" == "$HOME" ]; then
-                awesome_dir="$(set_fg WHITE)~$awesome_dir"
+                awesome_dir="${THEME_TILDE}~$awesome_dir"
                 break
             fi
         done
-        awesome_dir="$(set_bg 234)$awesome_dir$(reset_color)"
+        awesome_dir="$awesome_dir$(reset_color)"
     fi
     echo $awesome_dir
 }
 
-PS1="\n\$(prompt_bg_line)$P_USER$P_AT$P_HOST$(move_right)\$(show_pwd)\n\$(show_git_branch)$(bold)\$$(reset_color) "
+theme_basic
+
+PS1="\n\
+\$(prompt_bg_line)\
+${THEME_USER}\u\
+${THEME_AT}@\
+${THEME_HOST}\h\
+$(move_right)\
+\$(show_pwd)\n\
+\$(show_git_branch)\
+${THEME_DOLLOR}\$\
+$(reset_color) "
