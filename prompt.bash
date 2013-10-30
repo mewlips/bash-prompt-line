@@ -61,7 +61,7 @@ move_right() {
 show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [ $? == 0 ]; then
-        echo "$(set_fg YELLOW)$(bold)$(git branch | cut -d ' ' -f 2) $(reset_color)"
+        echo "$(set_fg YELLOW)$(bold)$(git branch | grep ^\* | cut -d ' ' -f 2) $(reset_color)"
     fi
 }
 
@@ -77,15 +77,25 @@ show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
     local color=100
-    while [ "$dir" != "/" ]; do
-        local dn=$(dirname "$dir")
-        local bn=$(basename "$dir")
-        awesome_dir="$(set_fg WHITE)/$(set_fg $color)$bn$awesome_dir"
-        color=$((color + 1))
-        dir=$dn
-    done
-    awesome_dir="$(set_bg 234)$awesome_dir$(reset_color)"
+    if [ "$dir" == "/" ]; then
+        awesome_dir="$(set_bg 234)$(set_fg WHITE)/$(reset_color)"
+    elif [ "$dir" == "$HOME" ]; then
+        awesome_dir="$(set_bg 234)$(set_fg WHITE)~$(reset_color)"
+    else
+        while [ "$dir" != "/" ]; do
+            local dn="$(dirname "$dir")"
+            local bn="$(basename "$dir")"
+            awesome_dir="$(set_fg WHITE)/$(set_fg $color)$bn$awesome_dir"
+            color=$((color + 1))
+            dir="$dn"
+            if [ "$dir" == "$HOME" ]; then
+                awesome_dir="$(set_fg WHITE)~$awesome_dir"
+                break
+            fi
+        done
+        awesome_dir="$(set_bg 234)$awesome_dir$(reset_color)"
+    fi
     echo $awesome_dir
 }
 
-PS1="\$(prompt_bg_line)$(move_right)$P_SEP$P_USER$P_AT$P_HOST$P_SEP$(move_right)\$(show_pwd)\n\$(show_git_branch)$(bold)\$$(reset_color) "
+PS1="\n\$(prompt_bg_line)$P_USER$P_AT$P_HOST$(move_right)\$(show_pwd)\n\$(show_git_branch)$(bold)\$$(reset_color) "
