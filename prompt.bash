@@ -45,16 +45,12 @@ theme_basic() {
     THEME_LINE_BG=234
     THEME_LINE=$(set_bg ${THEME_LINE_BG})$(set_fg ${THEME_LINE_BG})
     THEME_TIME=$(set_bg ${THEME_LINE_BG})$(set_fg blue)
-    THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg RED)
-    #THEME_GIT_BRANCH=$(bold)$(set_fg YELLOW)
-    THEME_GIT_BRANCH=
-    THEME_USER=$(bold)$(set_fg GREEN)$(set_bg ${THEME_LINE_BG})
-    THEME_AT=$(set_fg RED)
-    THEME_HOST=$(bold)$(set_fg BLUE)$(set_bg ${THEME_LINE_BG})
-    #THEME_DOLLOR=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg WHITE)
-    THEME_DOLLOR=
+    THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg red)
+    THEME_GIT_BRANCH=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg yellow)
+    THEME_USER=$(bold)$(set_fg green)$(set_bg ${THEME_LINE_BG})
+    THEME_AT=$(set_fg red)
+    THEME_HOST=$(bold)$(set_fg blue)$(set_bg ${THEME_LINE_BG})
     THEME_PATH_SEP=$(reset_color)$(set_bg ${THEME_LINE_BG})$(set_fg white)
-    THEME_TILDE=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg CYAN)
 }
 
 prompt_bg_line() {
@@ -79,18 +75,18 @@ prompt_bg_line() {
 show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [ $? == 0 ]; then
-        echo "${THEME_GIT_BRANCH}$(git branch | grep ^\* | cut -d ' ' -f 2) $(reset_color)"
+        echo "${THEME_GIT_BRANCH} (on $(git branch | grep ^\* | cut -d ' ' -f 2)) $(reset_color)"
     fi
 }
 
 show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
-    local color=196
+    local color=214
     if [ "$dir" == "/" ]; then
         awesome_dir="${THEME_PATH_SEP}/$(reset_color)"
     elif [ "$dir" == "$HOME" ]; then
-        awesome_dir="${THEME_TILDE}~$(reset_color)"
+        awesome_dir="$(set_fg $color)~$(reset_color)"
     else
         while [ "$dir" != "/" ]; do
             local dn="$(dirname "$dir")"
@@ -99,7 +95,7 @@ show_pwd() {
             color=$((color + 1))
             dir="$dn"
             if [ "$dir" == "$HOME" ]; then
-                awesome_dir="${THEME_TILDE}~$awesome_dir"
+                awesome_dir="$(set_fg $color)~$awesome_dir"
                 break
             fi
         done
@@ -116,6 +112,6 @@ ${THEME_USER}\u\
 ${THEME_AT}@\
 ${THEME_HOST}\h\
 $(move_right)\
-\$(show_pwd)\n\
-\$(show_git_branch)\
-${THEME_DOLLOR}\$ "
+\$(show_pwd)\
+\$(show_git_branch)\n\
+\$ "
