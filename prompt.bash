@@ -45,11 +45,13 @@ theme_basic() {
     THEME_LINE_BG=234
     THEME_LINE=$(set_bg ${THEME_LINE_BG})$(set_fg ${THEME_LINE_BG})
     THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg RED)
-    THEME_GIT_BRANCH=$(bold)$(set_fg YELLOW)
+    #THEME_GIT_BRANCH=$(bold)$(set_fg YELLOW)
+    THEME_GIT_BRANCH=
     THEME_USER=$(bold)$(set_fg GREEN)$(set_bg ${THEME_LINE_BG})
     THEME_AT=$(set_fg RED)
     THEME_HOST=$(bold)$(set_fg BLUE)$(set_bg ${THEME_LINE_BG})
-    THEME_DOLLOR=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg WHITE)
+    #THEME_DOLLOR=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg WHITE)
+    THEME_DOLLOR=
     THEME_PATH_SEP=$(reset_color)$(set_bg ${THEME_LINE_BG})$(set_fg white)
     THEME_TILDE=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg CYAN)
 }
@@ -80,7 +82,7 @@ show_git_branch() {
 show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
-    local color=100
+    local color=196
     if [ "$dir" == "/" ]; then
         awesome_dir="${THEME_PATH_SEP}/$(reset_color)"
     elif [ "$dir" == "$HOME" ]; then
@@ -112,5 +114,4 @@ ${THEME_HOST}\h\
 $(move_right)\
 \$(show_pwd)\n\
 \$(show_git_branch)\
-${THEME_DOLLOR}\$\
-$(reset_color) "
+${THEME_DOLLOR}\$ "
