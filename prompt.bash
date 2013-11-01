@@ -44,6 +44,7 @@ move_right() {
 theme_basic() {
     THEME_LINE_BG=234
     THEME_LINE=$(set_bg ${THEME_LINE_BG})$(set_fg ${THEME_LINE_BG})
+    THEME_TIME=$(set_bg ${THEME_LINE_BG})$(set_fg blue)
     THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg RED)
     #THEME_GIT_BRANCH=$(bold)$(set_fg YELLOW)
     THEME_GIT_BRANCH=
@@ -64,11 +65,14 @@ prompt_bg_line() {
         exit_num=
     fi
 
+    date=$(date +%T)
+    date_len=${#date}
+
     line=
-    for i in $(seq $(cols)); do
+    for i in $(seq $(( $(cols) - date_len)) ); do
         line="${line}_"
     done
-    line="${THEME_LINE}${line}$(tput cr)${exit_num}$(reset_color)"
+    line="${THEME_LINE}${line}${THEME_TIME}${date}$(tput cr)${exit_num}$(reset_color)"
     echo -n $line
 }
 
