@@ -10,14 +10,6 @@ c2n() {
         "magenta") echo 5;;
         "cyan")    echo 6;;
         "white")   echo 7;;
-        "BLACK")   echo 8;;
-        "RED")     echo 9;;
-        "GREEN")   echo 10;;
-        "YELLOW")  echo 11;;
-        "BLUE")    echo 12;;
-        "MAGENTA") echo 13;;
-        "CYAN")    echo 14;;
-        "WHITE")   echo 15;;
         *)         echo $1;;
     esac
 }
