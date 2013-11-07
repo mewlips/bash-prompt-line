@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TERM=xterm-256color # TODO: console
+
 c2n() {
     case "$1" in
         "black")   echo 0;;
