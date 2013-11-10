@@ -47,14 +47,14 @@ theme_basic() {
     THEME_PATH_SEP=$(reset_color)$(set_bg ${THEME_LINE_BG})$(set_fg white)
 }
 
-prompt_bg_line() {
+show_return() {
     exit_num=$?
     if [ "$exit_num" != "0" ]; then
-        exit_num="${THEME_EXIT_NUM}${exit_num}$(move_right)"
-    else
-        exit_num=
+        echo ${THEME_EXIT_NUM}${exit_num}$(reset_color)
     fi
+}
 
+prompt_bg_line() {
     date=$(date +%T)
     date_len=${#date}
 
@@ -62,14 +62,14 @@ prompt_bg_line() {
     for i in $(seq $(( $(cols) - date_len)) ); do
         line="${line}_"
     done
-    line="${THEME_LINE}${line}${THEME_TIME}${date}$(tput cr)${exit_num}$(reset_color)"
+    line="${THEME_LINE}${line}${THEME_TIME}${date}$(tput cr)$(reset_color)"
     echo -n $line
 }
 
 show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [ $? == 0 ]; then
-        echo "${THEME_GIT_BRANCH} (on $(git branch | grep ^\* | cut -d ' ' -f 2)) $(reset_color)"
+        echo "${THEME_GIT_BRANCH} (on $(git branch | grep ^\* | cut -d ' ' -f 2-)) $(reset_color)"
     fi
 }
 
@@ -98,14 +98,35 @@ show_pwd() {
     echo $awesome_dir
 }
 
+show_user() {
+    local user=$1
+    echo ${THEME_USER}${user}
+}
+
+show_at() {
+    echo ${THEME_AT}@
+}
+
+show_host() {
+    local host=$1
+    echo ${THEME_HOST}${host}
+}
+
 theme_basic
 
-PS1="\n\
+PS1_LINE_1="\
+\$(show_return)\n"
+
+PS1_LINE_2="\
 \$(prompt_bg_line)\
-${THEME_USER}\u\
-${THEME_AT}@\
-${THEME_HOST}\h\
+\$(show_user \u)\
+\$(show_at)\
+\$(show_host \h)\
 $(move_right)\
 \$(show_pwd)\
-\$(show_git_branch)\n\
+\$(show_git_branch)\n"
+
+PS1_LINE_3="\
 \$ "
+
+PS1=${PS1_LINE_1}${PS1_LINE_2}${PS1_LINE_3}
