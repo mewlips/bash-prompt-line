@@ -12,7 +12,7 @@ source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 show_return() {
     exit_num=$?
     if [[ $exit_num -ne 0 ]]; then
-        echo ${THEME_EXIT_NUM}${exit_num}$(reset_color)
+        echo $(theme_exit_num ${exit_num})
     fi
 }
 
@@ -24,21 +24,21 @@ prompt_bg_line() {
     for i in $(seq $(( $(cols) - date_len)) ); do
         line="${line} "
     done
-    line="${THEME_LINE}${line}${THEME_TIME}${date}$(tput cr)$(reset_color)"
-    echo -n "$line"
+    line="${line}$(theme_time ${date})$(tput cr)"
+    theme_line "$line"
 }
 
 show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [[ $? -eq 0 ]]; then
-        echo "${THEME_GIT_BRANCH} (on $(git branch | grep ^\* | cut -d ' ' -f 2-)) $(reset_color)"
+        theme_git_branch "($(git branch | grep ^\* | cut -d ' ' -f 2-))"
     fi
 }
 
 show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
-    local color=214
+    local color=${THEME_PWD_COLOR}
     if [[ $dir = "/" ]]; then
         awesome_dir="${THEME_PATH_SEP}/$(reset_color)"
     elif [[ $dir = $HOME ]]; then
@@ -62,7 +62,7 @@ show_pwd() {
 
 show_user() {
     local user=$1
-    echo ${THEME_USER}${user}
+    theme_user ${user}
 }
 
 show_at() {
@@ -86,6 +86,7 @@ PS1_LINE_2="\
 \$(show_host \h)\
 $(move_right)\
 \$(show_pwd)\
+$(move_right)\
 \$(show_git_branch)\n"
 
 PS1_LINE_3="\

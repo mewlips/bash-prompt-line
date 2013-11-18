@@ -40,8 +40,27 @@ theme_basic() {
     THEME_EXIT_NUM=$(bold)$(set_fg black)$(set_bg red)
     THEME_GIT_BRANCH=$(bold)$(set_bg ${THEME_LINE_BG})$(set_fg yellow)
     THEME_USER=$(bold)$(set_fg green)$(set_bg ${THEME_LINE_BG})
-    THEME_AT=$(set_fg red)
+    THEME_AT=$(set_bg ${THEME_LINE_BG})$(bold)$(set_fg red)
     THEME_HOST=$(bold)$(set_fg blue)$(set_bg ${THEME_LINE_BG})
     THEME_PATH_SEP=$(reset_color)$(set_bg ${THEME_LINE_BG})$(set_fg white)
+    THEME_PWD_COLOR=214
 }
 
+theme_line() {
+    echo ${THEME_LINE}"$*"$(reset_color)
+}
+theme_time() {
+    echo ${THEME_TIME}"$*"$(reset_color)
+}
+theme_exit_num() {
+    echo ${THEME_EXIT_NUM}"$*"$(reset_color)
+}
+theme_git_branch() {
+    echo ${THEME_GIT_BRANCH}"$*"$(reset_color)
+}
+theme_user() {
+    echo ${THEME_USER}"$*"$(reset_color)
+}
+theme_at() {
+    echo ${THEME_AT}@$(reset_color)
+}
