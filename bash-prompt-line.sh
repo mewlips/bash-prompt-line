@@ -20,9 +20,9 @@ source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 
 bpl-print-command() {
     if ! [[ $BASH_COMMAND =~ "$BPL_TITLE" ]]; then
-        echo "$(bpl-cr)$(tput cuu1)[$(date +%T)] \$ $BASH_COMMAND"; echo
-    else
-        echo "$(bpl-cr)$(tput cuu1)$(tput cuu1)$(tput cuu1)$(tput cuu1)"
+        #echo "$(bpl-cr)$(tput cuu1)$(bpl-theme-time $(date +%T)) \$ $BASH_COMMAND"
+        last_date="$(date +%T)"
+        last_cmd="${BASH_COMMAND%% *}"
     fi
 }
 
@@ -36,7 +36,11 @@ bpl-show-return() {
 }
 
 bpl-show-bg-line() {
-    date=$(date +%T)
+    if [[ -n $last_date ]]; then
+        date="[$last_cmd] ${last_date} ~ $(date +%T)"
+    else
+        date=$(date +%T)
+    fi
     date_len=${#date}
 
     line=
