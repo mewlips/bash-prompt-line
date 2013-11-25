@@ -21,6 +21,8 @@ source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 bpl-print-command() {
     if ! [[ $BASH_COMMAND =~ "$BPL_TITLE" ]]; then
         echo "$(bpl-cr)$(tput cuu1)[$(date +%T)] \$ $BASH_COMMAND"; echo
+    else
+        echo "$(bpl-cr)$(tput cuu1)$(tput cuu1)$(tput cuu1)$(tput cuu1)"
     fi
 }
 
@@ -64,7 +66,7 @@ bpl-show-pwd() {
         while [[ $dir != / ]]; do
             local dn="$(dirname "$dir")"
             local bn="$(basename "$dir")"
-            awesome_dir="${BPL_THEME_PATH_SEP}/$(bold)$(bpl-fg $color)$bn$awesome_dir"
+            awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl-bold)$(bpl-fg $color)$bn$awesome_dir"
             color=$((color + 1))
             dir="$dn"
             if [[ $dir = $HOME ]]; then
