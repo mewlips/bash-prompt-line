@@ -56,7 +56,7 @@ bpl-show-bg-line() {
         line="${line} "
     done
     line="${line}${applet}"
-    bpl-theme-line "$line$(bpl-cr)"
+    bpl-theme-bg "$line$(bpl-cr)"
 }
 
 bpl-show-git-branch() {
@@ -69,7 +69,7 @@ bpl-show-git-branch() {
 bpl-show-pwd() {
     local dir=$(pwd)
     local awesome_dir=
-    local color=${BPL_THEME_PWD_COLOR}
+    local color=${BPL_THEME_PWD_FG}
     if [[ $dir = "/" ]]; then
         awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl-reset)"
     elif [[ $dir = $HOME ]]; then
@@ -86,14 +86,14 @@ bpl-show-pwd() {
                 break
             fi
         done
-        awesome_dir="$awesome_dir$(bpl-reset)"
+        awesome_dir="$awesome_dir"
     fi
-    echo $awesome_dir
+    echo $(bpl-theme-bg "$awesome_dir")
 }
 
 bpl-show-user() {
     local user=$1
-    bpl-theme-user ${user}
+    bpl-theme-user "${user}"
 }
 
 bpl-show-at() {
@@ -102,7 +102,7 @@ bpl-show-at() {
 
 bpl-show-host() {
     local host=$1
-    echo ${BPL_THEME_HOST}${host}
+    bpl-theme-host "${host}"
 }
 
 bpl-theme-basic

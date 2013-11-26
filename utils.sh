@@ -38,7 +38,7 @@ bpl-cr() {
 
 bpl-theme-basic() {
     BPL_THEME_LINE_BG=234
-    BPL_THEME_LINE=$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-fg ${BPL_THEME_LINE_BG})
+    BPL_THEME_PWD_FG=214
     BPL_THEME_TIME=$(bpl-bg 24)$(bpl-fg 11)
     BPL_THEME_EXIT_NUM=$(bpl-bold)$(bpl-fg black)$(bpl-bg red)
     BPL_THEME_GIT_BRANCH=$(bpl-bold)$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-fg yellow)
@@ -46,12 +46,11 @@ bpl-theme-basic() {
     BPL_THEME_AT=$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-bold)$(bpl-fg red)
     BPL_THEME_HOST=$(bpl-bold)$(bpl-fg blue)$(bpl-bg ${BPL_THEME_LINE_BG})
     BPL_THEME_PATH_SEP=$(bpl-reset)$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-fg white)
-    BPL_THEME_PWD_COLOR=214
-    BPL_THEME_APPLET=$(bpl-bg 19)$(bpl-fg 11)
+    BPL_THEME_APPLET=$(bpl-bg 238)$(bpl-fg 11)
 }
 
-bpl-theme-line() {
-    echo ${BPL_THEME_LINE}"$*"$(bpl-reset)
+bpl-theme-bg() {
+    echo $(bpl-bg $BPL_THEME_LINE_BG)"$*"$(bpl-reset)
 }
 bpl-theme-time() {
     echo ${BPL_THEME_TIME}"$*"$(bpl-reset)
@@ -67,6 +66,9 @@ bpl-theme-user() {
 }
 bpl-theme-at() {
     echo ${BPL_THEME_AT}@$(bpl-reset)
+}
+bpl-theme-host() {
+    echo ${BPL_THEME_HOST}"$*"$(bpl-reset)
 }
 bpl-theme-applet() {
     echo ${BPL_THEME_APPLET}"$*"$(bpl-reset)
