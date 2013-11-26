@@ -21,8 +21,10 @@ source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 bpl-print-command() {
     if ! [[ $BASH_COMMAND =~ "$BPL_TITLE" ]]; then
         #echo "$(bpl-cr)$(tput cuu1)$(bpl-theme-time $(date +%T)) \$ $BASH_COMMAND"
-        last_date="$(date +%T)"
-        last_cmd="${BASH_COMMAND%% *}"
+        bpl_last_time="$(date +%s.%N)"
+        bpl_last_cmd="${BASH_COMMAND%% *}"
+    else
+        bpl_last_time=
     fi
 }
 
@@ -36,19 +38,25 @@ bpl-show-return() {
 }
 
 bpl-show-bg-line() {
-    if [[ -n $last_date ]]; then
-        date="[$last_cmd] ${last_date} ~ $(date +%T)"
-    else
-        date=$(date +%T)
+    local applet_len=0
+    if [[ -n $bpl_last_time ]]; then
+        local curr_time=$(date +%s.%N)
+        local time_elasped=$(awk "BEGIN {printf \"%0.3f\", $curr_time - $bpl_last_time}")
+        local cmd_time=" $bpl_last_cmd (${time_elasped}) "
+        local applet_len=$((applet_len + ${#cmd_time}))
+        local applet="$(bpl-theme-applet "$cmd_time")"
     fi
-    date_len=${#date}
 
-    line=
-    for i in $(seq $(( $(bpl-cols) - date_len)) ); do
+    local date=" $(date +%H:%M) "
+    applet_len=$((applet_len + ${#date}))
+    local applet="${applet}$(bpl-theme-time "$date")"
+
+    local line=
+    for i in $(seq $(( $(bpl-cols) - applet_len)) ); do
         line="${line} "
     done
-    line="${line}$(bpl-theme-time ${date})$(bpl-cr)"
-    bpl-theme-line "$line"
+    line="${line}${applet}"
+    bpl-theme-line "$line$(bpl-cr)"
 }
 
 bpl-show-git-branch() {
