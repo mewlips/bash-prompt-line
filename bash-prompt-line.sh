@@ -28,7 +28,19 @@ bpl-print-command() {
     fi
 }
 
-PROMPT_COMMAND="${BPL_TITLE}; trap 'bpl-print-command; trap DEBUG' DEBUG"
+push_dir() {
+    if [[ ${bpl_dir_list[bpl_dir_idx]} != $PWD ]]; then
+        bpl_dir_list[++bpl_dir_idx]="$PWD"
+    fi
+}
+
+list_dir() {
+    for idx in $(seq $bpl_dir_idx); do
+        echo "[$idx] ${bpl_dir_list[$idx]}"
+    done
+}
+
+PROMPT_COMMAND="${BPL_TITLE}; push_dir; trap 'bpl-print-command; trap DEBUG' DEBUG"
 
 bpl-show-return() {
     exit_num=$?
@@ -41,7 +53,17 @@ bpl-show-bg-line() {
     local applet_len=0
     if [[ -n $bpl_last_time ]]; then
         local curr_time=$(date +%s.%N)
-        local time_elasped=$(awk "BEGIN {printf \"%0.3f\", $curr_time - $bpl_last_time}")
+        local time_elasped=$(                                        \
+            awk "BEGIN {                                             \
+                t = $curr_time - $bpl_last_time;                     \
+                if (t < 60) {                                        \
+                    printf \"%0.3f\", t                              \
+                } else if (t < 3600) {                               \
+                    printf \"%d:%06.3f\", t/60, t%60                 \
+                } else {                                             \
+                    printf \"%d:%02d:%06.3f\", t/3600, t/60%60, t%60 \
+                }                                                    \
+            }")
         local cmd_time=" $bpl_last_cmd (${time_elasped}) "
         local applet_len=$((applet_len + ${#cmd_time}))
         local applet="$(bpl-theme-applet "$cmd_time")"

@@ -40,7 +40,7 @@ bpl-theme-basic() {
     BPL_THEME_LINE_BG=234
     BPL_THEME_PWD_FG=214
     BPL_THEME_TIME=$(bpl-bg 24)$(bpl-fg 11)
-    BPL_THEME_EXIT_NUM=$(bpl-bold)$(bpl-fg black)$(bpl-bg red)
+    BPL_THEME_EXIT_NUM=$(bpl-bold)$(bpl-fg yellow)$(bpl-bg red)
     BPL_THEME_GIT_BRANCH=$(bpl-bold)$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-fg yellow)
     BPL_THEME_USER=$(bpl-bold)$(bpl-fg green)$(bpl-bg ${BPL_THEME_LINE_BG})
     BPL_THEME_AT=$(bpl-bg ${BPL_THEME_LINE_BG})$(bpl-bold)$(bpl-fg red)
