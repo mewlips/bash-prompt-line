@@ -18,9 +18,9 @@ esac
 BASH_PROMPT_LINE_UTILS_SCRIPT="$(dirname $(readlink ~/.bash-prompt-line))/utils.sh"
 source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 
-bpl-print-command() {
+bpl_print_command() {
     if ! [[ $BASH_COMMAND =~ "$BPL_TITLE" ]]; then
-        #echo "$(bpl-cr)$(tput cuu1)$(bpl-theme-time $(date +%T)) \$ $BASH_COMMAND"
+        #echo "$(bpl_cr)$(tput cuu1)$(bpl_theme_time $(date +%T)) \$ $BASH_COMMAND"
         bpl_last_time="$(date +%s.%N)"
         bpl_last_cmd="${BASH_COMMAND%% *}"
     else
@@ -40,16 +40,16 @@ list_dir() {
     done
 }
 
-PROMPT_COMMAND="${BPL_TITLE}; push_dir; trap 'bpl-print-command; trap DEBUG' DEBUG"
+PROMPT_COMMAND="${BPL_TITLE}; push_dir; trap 'bpl_print_command; trap DEBUG' DEBUG"
 
-bpl-show-return() {
+bpl_show_return() {
     exit_num=$?
     if [[ $exit_num -ne 0 ]]; then
-        echo $(bpl-theme-exit_num ${exit_num})
+        echo $(bpl_theme_exit_num ${exit_num})
     fi
 }
 
-bpl-show-bg-line() {
+bpl_show_bg_line() {
     local applet_len=0
     if [[ -n $bpl_last_time ]]; then
         local curr_time=$(date +%s.%N)
@@ -66,81 +66,81 @@ bpl-show-bg-line() {
             }")
         local cmd_time=" $bpl_last_cmd (${time_elasped}) "
         local applet_len=$((applet_len + ${#cmd_time}))
-        local applet="$(bpl-theme-applet "$cmd_time")"
+        local applet="$(bpl_theme_applet "$cmd_time")"
     fi
 
     local date=" $(date +%H:%M) "
     applet_len=$((applet_len + ${#date}))
-    local applet="${applet}$(bpl-theme-time "$date")"
+    local applet="${applet}$(bpl_theme_time "$date")"
 
     local line=
-    for i in $(seq $(( $(bpl-cols) - applet_len)) ); do
+    for i in $(seq $(( $(bpl_cols) - applet_len)) ); do
         line="${line} "
     done
     line="${line}${applet}"
-    bpl-theme-bg "$line$(bpl-cr)"
+    bpl_theme_bg "$line$(bpl_cr)"
 }
 
-bpl-show-git-branch() {
+bpl_show_git_branch() {
     branch=$(git branch 2> /dev/null)
     if [[ $? -eq 0 ]]; then
-        bpl-theme-git_branch "($(git branch | grep ^\* | cut -d ' ' -f 2-))"
+        bpl_theme_git_branch "($(git branch | grep ^\* | cut -d ' ' -f 2-))"
     fi
 }
 
-bpl-show-pwd() {
+bpl_show_pwd() {
     local dir=$(pwd)
     local awesome_dir=
     local color=${BPL_THEME_PWD_FG}
     if [[ $dir = "/" ]]; then
-        awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl-reset)"
+        awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl_reset)"
     elif [[ $dir = $HOME ]]; then
-        awesome_dir="$(bpl-fg $color)~$(bpl-reset)"
+        awesome_dir="$(bpl_fg $color)~$(bpl_reset)"
     else
         while [[ $dir != / ]]; do
             local dn="$(dirname "$dir")"
             local bn="$(basename "$dir")"
-            awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl-bold)$(bpl-fg $color)$bn$awesome_dir"
+            awesome_dir="${BPL_THEME_PATH_SEP}/$(bpl_bold)$(bpl_fg $color)$bn$awesome_dir"
             color=$((color + 1))
             dir="$dn"
             if [[ $dir = $HOME ]]; then
-                awesome_dir="$(bpl-fg $color)~$awesome_dir"
+                awesome_dir="$(bpl_fg $color)~$awesome_dir"
                 break
             fi
         done
         awesome_dir="$awesome_dir"
     fi
-    echo $(bpl-theme-bg "$awesome_dir")
+    echo $(bpl_theme_bg "$awesome_dir")
 }
 
-bpl-show-user() {
+bpl_show_user() {
     local user=$1
-    bpl-theme-user "${user}"
+    bpl_theme_user "${user}"
 }
 
-bpl-show-at() {
+bpl_show_at() {
     echo ${BPL_THEME_AT}@
 }
 
-bpl-show-host() {
+bpl_show_host() {
     local host=$1
-    bpl-theme-host "${host}"
+    bpl_theme_host "${host}"
 }
 
-bpl-theme-basic
+bpl_theme_basic
 
 PS1_LINE_1="\
-\$(bpl-show-return)\n"
+\$(bpl_show_return)\n"
 
 PS1_LINE_2="\
-\$(bpl-show-bg-line)\
-\$(bpl-show-user \u)\
-\$(bpl-show-at)\
-\$(bpl-show-host \h)\
-$(bpl-move-right)\
-\$(bpl-show-pwd)\
-$(bpl-move-right)\
-\$(bpl-show-git-branch)\n"
+\$(bpl_show_bg_line)\
+\$(bpl_show_user \u)\
+\$(bpl_show_at)\
+\$(bpl_show_host \h)\
+$(bpl_move_right)\
+\$(bpl_show_pwd)\
+$(bpl_move_right)\
+\$(bpl_show_git_branch)\n"
 
 PS1_LINE_3="\
 \$ "
