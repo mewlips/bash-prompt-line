@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+case $(uname) in
+    Darwin)
+        DATE=gdate
+        ;;
+    *)
+        DATE=date
+        ;;
+esac
+
 if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
     export TERM=gnome-256color
 elif [[ $TERM != dumb ]] && infocmp xterm-256color >/dev/null 2>&1; then
@@ -20,8 +29,8 @@ source "$BASH_PROMPT_LINE_UTILS_SCRIPT"
 
 bpl_print_command() {
     if ! [[ $BASH_COMMAND =~ "$BPL_TITLE" ]]; then
-        #echo "$(bpl_cr)$(tput cuu1)$(bpl_theme_time $(date +%T)) \$ $BASH_COMMAND"
-        bpl_last_time="$(date +%s.%N)"
+        #echo "$(bpl_cr)$(tput cuu1)$(bpl_theme_time $($DATE +%T)) \$ $BASH_COMMAND"
+        bpl_last_time="$($DATE +%s.%N)"
         bpl_last_cmd="${BASH_COMMAND%% *}"
     else
         bpl_last_time=
@@ -52,7 +61,7 @@ bpl_show_return() {
 bpl_show_bg_line() {
     local applet_len=0
     if [[ -n $bpl_last_time ]]; then
-        local curr_time=$(date +%s.%N)
+        local curr_time=$($DATE +%s.%N)
         local time_elasped=$(                                        \
             awk "BEGIN {                                             \
                 t = $curr_time - $bpl_last_time;                     \
@@ -69,7 +78,7 @@ bpl_show_bg_line() {
         local applet="$(bpl_theme_applet "$cmd_time")"
     fi
 
-    local date=" $(date +%H:%M) "
+    local date=" $($DATE +%H:%M) "
     applet_len=$((applet_len + ${#date}))
     local applet="${applet}$(bpl_theme_time "$date")"
 
